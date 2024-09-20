@@ -1,12 +1,16 @@
 ---
 title: "p8105_hw1_zl3543"
-author: "Zihan Lin"
+author: "Zihan Lin (zl3543)"
 date: "2024-09-19"
 output: github_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+```{r}
 
 # Problem 1
 
@@ -18,8 +22,8 @@ library(ggplot2)
 data("penguins", package = "palmerpenguins")
 
 ```
-The data set contains `r nrow(penguins)` rows and `r ncol(penguins)` columns. The mean flipper length is `r round(mean(penguins$flipper_length_mm, na.rm = TRUE), 2)` mm.
 
+The data set contains `r nrow(penguins)` rows and `r ncol(penguins)` columns. The mean flipper length is `r round(mean(penguins$flipper_length_mm, na.rm = TRUE), 2)` mm.
 
 ```{r}
 # Remove rows with missing values in the bill_length_mm or flipper_length_mm columns
@@ -38,7 +42,69 @@ penguins_plot <- ggplot(data = penguins_clean, aes(x = bill_length_mm, y = flipp
 # Display the plot
 penguins_plot
 
+```
+
+```{r}
+
 # Save the scatterplot to the project directory
 ggsave("scatterplot_penguins.png", plot = penguins_plot, width = 6, height = 4)
 
 ```
+
+```{r}
+
+# Problem 2
+
+# Load tidyverse for data manipulation
+library(tidyverse)
+
+# Set seed for reproducibility
+set.seed(123)
+
+# Create the data frame
+df <- data.frame(
+  numeric_vector = rnorm(10), # Random sample from standard Normal distribution
+  logical_vector = rnorm(10) > 0, # Logical vector indicating values > 0
+  character_vector = c("A", "B", "C", "D", "E", "F", "G", "H", "I", "J"), # Character vector
+  factor_vector = factor(sample(c("Low", "Medium", "High"), 10, replace = TRUE)) # Factor vector with 3 levels
+)
+
+# View the data frame
+df
+
+```
+
+```{r}
+
+# Take the mean of each variable
+numeric_mean <- mean(pull(df, numeric_vector))       # Works for numeric vectors
+logical_mean <- mean(pull(df, logical_vector))       # Works for logical vectors (TRUE = 1, FALSE = 0)
+character_mean <- try(mean(pull(df, character_vector)))  # Will fail for character vectors
+factor_mean <- try(mean(pull(df, factor_vector)))    # Will fail for factor vectors
+
+# Print the results
+cat("Mean of numeric vector:", numeric_mean, "\n")
+cat("Mean of logical vector:", logical_mean, "\n")
+cat("Mean of character vector:", character_mean, "\n")
+cat("Mean of factor vector:", factor_mean, "\n")
+
+# Numeric vector: The mean works correctly, as expected.
+# Logical vector: The mean works and represents the proportion of TRUE values.
+# Character vector: Taking the mean of a character vector is not meaningful and results in an error.
+# Factor vector: Taking the mean of a factor is also not meaningful because factors are categorical data, not numeric.
+
+# Coerce factor to numeric and calculate the mean
+factor_mean_coerced <- mean(as.numeric(pull(df, factor_vector)))
+cat("Mean of coerced factor vector:", factor_mean_coerced, "\n")
+
+```
+
+```{r}
+
+# Apply as.numeric to logical, character, and factor variables
+logical_as_numeric <- as.numeric(pull(df, logical_vector))  # Convert logical to numeric
+character_as_numeric <- as.numeric(pull(df, character_vector))  # Convert character to numeric
+factor_as_numeric <- as.numeric(pull(df, factor_vector))  # Convert factor to numeric
+
+```
+
