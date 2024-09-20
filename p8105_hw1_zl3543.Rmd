@@ -7,4 +7,38 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+# Problem 1
+
+# Load necessary libraries
+library(palmerpenguins)
+library(ggplot2)
+
+# Load the penguins dataset
+data("penguins", package = "palmerpenguins")
+
+```
+The data set contains `r nrow(penguins)` rows and `r ncol(penguins)` columns. The mean flipper length is `r round(mean(penguins$flipper_length_mm, na.rm = TRUE), 2)` mm.
+
+
+```{r}
+# Remove rows with missing values in the bill_length_mm or flipper_length_mm columns
+penguins_clean <- na.omit(penguins[, c("bill_length_mm", "flipper_length_mm", "species")])
+
+# Create the scatterplot
+penguins_plot <- ggplot(data = penguins_clean, aes(x = bill_length_mm, y = flipper_length_mm, color = species)) +
+  geom_point() +
+  labs(
+    title = "Scatterplot of Flipper Length vs Bill Length",
+    x = "Bill Length (mm)",
+    y = "Flipper Length (mm)"
+  ) +
+  theme_minimal()
+
+# Display the plot
+penguins_plot
+
+# Save the scatterplot to the project directory
+ggsave("scatterplot_penguins.png", plot = penguins_plot, width = 6, height = 4)
+
 ```
